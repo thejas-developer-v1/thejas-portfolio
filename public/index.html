@@ -7,9 +7,17 @@
     <style>
         :root {
             --bg-color: #0a0a0c;
-            --accent-color: #8a2be2; /* Electric Violet */
+            --accent-color: #8a2be2;
+            --accent-dim: rgba(138, 43, 226, 0.15);
+            --accent-glow: rgba(138, 43, 226, 0.4);
             --text-main: #e0e0e0;
+            --text-muted: #8b949e;
+            --border: #333;
+            --card-bg: #16161a;
         }
+
+        * { box-sizing: border-box; }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
@@ -17,72 +25,359 @@
             margin: 0;
             display: flex;
         }
+
+        /* ── Sidebar ── */
         .sidebar {
             width: 250px;
             height: 100vh;
-            border-right: 1px solid #333;
+            border-right: 1px solid var(--border);
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            background: var(--bg-color);
+            z-index: 100;
         }
+
+        .profile-name {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .profile-role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        nav { margin-top: 30px; }
+
+        nav a {
+            display: block;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 6px 0;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-color);
+        }
+
+        /* blinking cursor on active link */
+        nav a.active::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+
+        /* ── Main Content ── */
         .content {
-            margin-left: 300px;
+            margin-left: 290px;
             padding: 40px;
-            max-width: 800px;
+            max-width: 860px;
+            width: 100%;
         }
-        .profile-name { font-size: 1.5rem; color: var(--accent-color); font-weight: bold; }
+
+        section { margin-bottom: 60px; }
+
+        h2 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+
+        h3 { color: var(--text-muted); font-size: 1rem; }
+
+        /* ── Generic Card ── */
         .card {
-            background: #16161a;
-            border: 1px solid #333;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             padding: 20px;
             margin: 20px 0;
             border-left: 4px solid var(--accent-color);
         }
-        input, textarea {
-            width: 100%; background: #000; border: 1px solid #444;
-            color: var(--accent-color); padding: 10px; margin-bottom: 10px;
+
+        /* ── Portfolio Grid ── */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
-        button {
-            background: var(--accent-color); color: white; border: none;
-            padding: 10px 20px; cursor: pointer; font-weight: bold;
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--accent-color);
+            padding: 20px;
+            position: relative;
+            cursor: default;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-dim);
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px var(--accent-glow);
+            border-color: var(--accent-color);
+        }
+
+        .project-card:hover::before { opacity: 1; }
+
+        .project-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .project-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--text-main);
+            margin: 0 0 8px;
+        }
+
+        .project-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0 0 16px;
+        }
+
+        .project-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .stack-pill {
+            font-size: 0.65rem;
+            background: #1e1e24;
+            border: 1px solid #444;
+            color: var(--text-muted);
+            padding: 2px 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .project-links { display: flex; gap: 10px; }
+
+        .project-links a {
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-color);
+            transition: opacity 0.2s;
+        }
+
+        .project-links a:hover { opacity: 0.7; }
+
+        /* Status dot */
+        .status-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2ea043;
+            margin-right: 6px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.wip { background: #d29922; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 5px 14px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-dim);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* ── Guestbook form (unchanged) ── */
+        input, textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid #444;
+            color: var(--accent-color);
+            padding: 10px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        button[type="submit"] {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+            .sidebar { display: none; }
+            .content { margin-left: 0; padding: 20px; }
+            .projects-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="profile-name">Thejas</div>
-        <div style="font-size: 0.8rem; color: #8b949e;">Full Stack Operative</div>
-        <nav style="margin-top: 30px;">
-            <p>> /about_me</p>
-            <p>> /projects</p>
-            <p>> /guestbook_log</p>
-        </nav>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<div class="sidebar">
+    <div class="profile-name">Thejas</div>
+    <div class="profile-role">Full Stack Operative</div>
+    <nav>
+        <a href="#about" class="active">> /about_me</a>
+        <a href="#projects">> /projects</a>
+        <a href="#guestbook">> /guestbook_log</a>
+    </nav>
+
+    <div style="position: absolute; bottom: 20px; left: 20px; font-size: 0.65rem; color: #444;">
+        <span class="status-dot"></span>sys_online
     </div>
+</div>
 
-    <div class="content">
-        <section id="about">
-            <h2>> System_Info</h2>
-            <p>Welcome. I am a BCA student specialized in secure systems and clean UI architecture.</p>
-        </section>
+<!-- ══════════════ CONTENT ══════════════ -->
+<div class="content">
 
-        <section id="guestbook">
-            <h2>> Encrypted_Transmission</h2>
-            <form action="/submit-guestbook" method="POST">
-                <input type="text" name="name" placeholder="Enter Codename" required>
-                <textarea name="message" placeholder="Message content..." required></textarea>
-                <button type="submit">SEND_DATA</button>
-            </form>
+    <!-- ABOUT -->
+    <section id="about">
+        <h2>> System_Info</h2>
+        <div class="card">
+            <p style="margin: 0 0 10px;"><span style="color: var(--accent-color);">name</span>     : Thejas</p>
+            <p style="margin: 0 0 10px;"><span style="color: var(--accent-color);">status</span>   : Aspiring BCA Student</p>
+            <p style="margin: 0 0 10px;"><span style="color: var(--accent-color);">email</span>    : <a href="mailto:Thejas.sudhi@gmail.com" style="color: var(--text-muted); text-decoration: none; border-bottom: 1px dashed #555;">Thejas.sudhi@gmail.com</a></p>
+            <p style="margin: 20px 0 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.7;">
+                Hey — I'm Thejas, an aspiring BCA student who enjoys building things for the web.<br>
+                Currently leveling up my skills in full stack development and exploring how software is built from the ground up.<br>
+                Open to collaborations, feedback, and new opportunities.
+            </p>
+        </div>
+    </section>
 
-            <div style="margin-top: 30px;">
-                <h3>> Recent_Logs</h3>
-                <div id="guestbook-entries">
-                    <div class="card">System: Initializing database connection...</div>
+    <!-- ════ PORTFOLIO / PROJECTS ════ -->
+    <section id="projects">
+        <h2>> Project_Manifest</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
+            Listing all operational modules. Filter by category below.
+        </p>
+
+
+
+        <div class="projects-grid" id="projects-grid">
+
+                <!-- Project 1 -->
+            <div class="project-card" data-category="web">
+                <span class="project-tag">Web Dev</span>
+                <div class="project-title">
+                    <span class="status-dot"></span>To-Do List App
+                </div>
+                <p class="project-desc">
+                    A simple to-do list where you can add, check off, and delete tasks. Built as a beginner HTML/CSS/JS project.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-pill">HTML</span>
+                    <span class="stack-pill">CSS</span>
+                    <span class="stack-pill">JavaScript</span>
+                </div>
+                <div class="project-links">
+                    <a href="#">[GITHUB]</a>
+                    <a href="#">[LIVE]</a>
                 </div>
             </div>
-        </section>
-    </div>
 
-    <script>
-        async function loadEntries() {
+            <!-- Project 2 -->
+            <div class="project-card" data-category="web">
+                <span class="project-tag">Web Dev</span>
+                <div class="project-title">
+                    <span class="status-dot"></span>Calculator
+                </div>
+                <p class="project-desc">
+                    A basic calculator handling addition, subtraction, multiplication and division with a clean button UI.
+                </p>
+                <div class="project-stack">
+                    <span class="stack-pill">HTML</span>
+                    <span class="stack-pill">CSS</span>
+                    <span class="stack-pill">JavaScript</span>
+                </div>
+                <div class="project-links">
+                    <a href="#">[GITHUB]</a>
+                    <a href="#">[LIVE]</a>
+                </div>
+            </div>
+
+        </div><!-- /projects-grid -->
+    </section>
+
+    <!-- GUESTBOOK (unchanged functionality) -->
+    <section id="guestbook">
+        <h2>> Encrypted_Transmission</h2>
+        <form action="/submit-guestbook" method="POST">
+            <input type="text" name="name" placeholder="Enter Codename" required>
+            <textarea name="message" placeholder="Message content..." required></textarea>
+            <button type="submit">SEND_DATA</button>
+        </form>
+        <div style="margin-top: 30px;">
+            <h3>> Recent_Logs</h3>
+            <div id="guestbook-entries">
+                <div class="card">System: Initializing database connection...</div>
+            </div>
+        </div>
+    </section>
+
+</div><!-- /content -->
+
+<script>
+    /* ── Guestbook loader (original, unchanged) ── */
+    async function loadEntries() {
+        try {
             const response = await fetch('/guestbook-entries');
             const entries = await response.json();
             const list = document.getElementById('guestbook-entries');
@@ -91,8 +386,43 @@
                     <strong style="color: var(--accent-color)">${e.name}</strong>: ${e.message}
                 </div>
             `).join('');
-        }
-        loadEntries();
-    </script>
+        } catch (_) { /* server not running locally — silently ignore */ }
+    }
+    loadEntries();
+
+    /* ── Active nav link on scroll ── */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+                if (link) link.classList.add('active');
+            }
+        });
+    }, { threshold: 0.4 });
+
+    sections.forEach(s => observer.observe(s));
+
+    /* ── Project filter ── */
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.filter;
+            projectCards.forEach(card => {
+                const show = filter === 'all' || card.dataset.category === filter;
+                card.style.display = show ? 'block' : 'none';
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
